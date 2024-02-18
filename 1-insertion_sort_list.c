@@ -1,36 +1,48 @@
 #include "sort.h"
 
 /**
- * insertion_sort_list - sorts a doubly linked list of integers
- * in ascending order using the Insertion sort algorithm
- * @list: pointer to the head of the list
- **/
+ * swap_nodes - Swap two nodes in a listint_t doubly-linked list.
+ * @h: A pointer to the head of the doubly-linked list.
+ * @n1: A pointer to the first node to swap.
+ * @n2: The second node to swap.
+ */
+void swap_nodes(listint_t **h, listint_t **n1, listint_t *n2)
+{
+	(*n1)->next = n2->next;
+	if (n2->next != NULL)
+		n2->next->prev = *n1;
+	n2->prev = (*n1)->prev;
+	n2->next = *n1;
+	if ((*n1)->prev != NULL)
+		(*n1)->prev->next = n2;
+	else
+		*h = n2;
+	(*n1)->prev = n2;
+	*n1 = n2->prev;
+}
+
+/**
+ * insertion_sort_list - Sorts a doubly linked list of integers
+ *                       using the insertion sort algorithm.
+ * @list: A pointer to the head of a doubly-linked list of integers.
+ *
+ * Description: Prints the list after each swap.
+ */
 void insertion_sort_list(listint_t **list)
 {
-    listint_t *current, *temp;
+	listint_t *iter, *insert, *tmp;
 
-    if (list == NULL || *list == NULL || (*list)->next == NULL)
-        return;
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
+		return;
 
-    current = (*list)->next;
-
-    while (current != NULL)
-    {
-        temp = current;
-        while (temp->prev != NULL && temp->n < temp->prev->n)
-        {
-            temp->prev->next = temp->next;
-            if (temp->next != NULL)
-                temp->next->prev = temp->prev;
-            temp->next = temp->prev;
-            temp->prev = temp->prev->prev;
-            temp->next->prev = temp;
-            if (temp->prev != NULL)
-                temp->prev->next = temp;
-            else
-                *list = temp;
-            print_list(*list);
-        }
-        current = current->next;
-    }
+	for (iter = (*list)->next; iter != NULL; iter = tmp)
+	{
+		tmp = iter->next;
+		insert = iter->prev;
+		while (insert != NULL && iter->n < insert->n)
+		{
+			swap_nodes(list, &insert, iter);
+			print_list((const listint_t *)*list);
+		}
+	}
 }
