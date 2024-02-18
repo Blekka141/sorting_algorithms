@@ -1,34 +1,48 @@
 #include "sort.h"
 
 /**
- * bubble_sort - Sort an array of integers in ascending order using Bubble Sort
- * @array: Array to be sorted
- * @size: Size of the array
+ * swap_ints - Swap two integers in an array.
+ * @a: The first integer to swap.
+ * @b: The second integer to swap.
  */
-void bubble_sort(int *array, size_t size)
+void swap_ints(int *a, int *b)
 {
-    size_t i, j;
-    int temp;
-    bool swapped;
+	int tmp;
 
-    if (array == NULL || size < 2)
-        return;
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
 
-    for (i = 0; i < size - 1; i++)
-    {
-        swapped = false;
-        for (j = 0; j < size - i - 1; j++)
-        {
-            if (array[j] > array[j + 1])
-            {
-                temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
-                swapped = true;
-                print_array(array, size);
-            }
-        }
-        if (!swapped)
-            break;
-    }
+/**
+ * shell_sort - Sort an array of integers in ascending
+ *              order using the shell sort algorithm.
+ * @array: An array of integers.
+ * @size: The size of the array.
+ *
+ * Description: Uses the Knuth interval sequence.
+ */
+void shell_sort(int *array, size_t size)
+{
+	size_t gap, i, j;
+
+	if (array == NULL || size < 2)
+		return;
+
+	for (gap = 1; gap < (size / 3);)
+		gap = gap * 3 + 1;
+
+	for (; gap >= 1; gap /= 3)
+	{
+		for (i = gap; i < size; i++)
+		{
+			j = i;
+			while (j >= gap && array[j - gap] > array[j])
+			{
+				swap_ints(array + j, array + (j - gap));
+				j -= gap;
+			}
+		}
+		print_array(array, size);
+	}
 }
